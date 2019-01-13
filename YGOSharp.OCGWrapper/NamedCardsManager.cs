@@ -8,7 +8,7 @@ namespace YGOSharp.OCGWrapper
 {
     public static class NamedCardsManager
     {
-        private static IDictionary<int, NamedCard> _cards;
+        private static IDictionary<int, NamedCard> _cards = new Dictionary<int, NamedCard>();
 
         public static void Init(string databaseFullPath)
         {
@@ -19,7 +19,6 @@ namespace YGOSharp.OCGWrapper
                     throw new Exception("Could not find the cards database.");
                 }
 
-                _cards = new Dictionary<int, NamedCard>();
 
                 using (SqliteConnection connection = new SqliteConnection("Data Source=" + databaseFullPath))
                 {
@@ -56,7 +55,11 @@ namespace YGOSharp.OCGWrapper
         private static void LoadCard(IDataRecord reader)
         {
             NamedCard card = new NamedCard(reader);
+            if (!_cards.ContainsKey(card.Id))
+            {
             _cards.Add(card.Id, card);
+            }
+            
         }
     }
 }
